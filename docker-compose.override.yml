@@ -1,0 +1,19 @@
+---
+services:
+  consumer:
+    container_name: kafka_consumer
+    command: ["python", "consumer.py"]
+
+  producer:
+    container_name: kafka_producer
+    command: ["python", "producer.py"]
+
+  zookeeper:
+    ports:
+      - 2181:2181
+    container_name: mein-zookeeper
+
+  kafka:
+    ports:
+      - 9092:9092
+    container_name: mein-kafka
