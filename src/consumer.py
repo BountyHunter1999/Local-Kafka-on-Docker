@@ -4,7 +4,7 @@ import sys
 
 
 def get_consumer() -> KafkaConsumer:
-    bootstrap_servers = ["kafka:9092"]
+    bootstrap_servers = ["kafka"]
     topicname = "linkedin"
     consumer = KafkaConsumer(
         topicname,

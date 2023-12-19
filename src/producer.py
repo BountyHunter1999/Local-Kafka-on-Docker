@@ -9,7 +9,7 @@ def is_valid():
 
 
 def get_producer() -> KafkaProducer:
-    bootstrap_servers = ["kafka:9092"]
+    bootstrap_servers = ["kafka"]
     topicname = "linkedin"
     producer = KafkaProducer(bootstrap_servers=bootstrap_servers)
     # producer = KafkaProducer()
