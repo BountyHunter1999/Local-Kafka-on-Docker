@@ -47,15 +47,53 @@ def create_data(n=10):
         n += 1
 
 
+def send_message():
+    pass
+
+
+class MeinKafkaProducer:
+    def __init__(
+        self, servers: str | list = "kafka", topic: str = "my_topic", partition: int = 1
+    ) -> None:
+        self.topic = topic
+        self.partition = partition
+        self.servers = servers
+        self.producer = KafkaProducer(
+            bootstrap_servers=self.servers,
+            key_serializer=self.key_serializer,
+            value_serializer=self.serializer,
+            partitioner=self.partitioner,
+        )
+
+    def serializer(self, data):
+        return json.dumps(data).encode("utf-8")
+
+    def key_serializer(self, data):
+        return json.dumps(data).encode("utf-8")
+
+    def partitioner(self, key_bytes, all_partitions, available_partitions):
+        key = json.loads(key_bytes)
+        return available_partitions[(key % self.partition) - 1]
+
+    def send(self, key, value, **kwargs):
+        # self.producer.send(
+        #         topic=self.topic, value=json.dumps(row).encode("utf-8"), partition=i % 2
+        # )
+        return self.producer.send(topic=self.topic, key=key, value=value)
+
+
 if __name__ == "__main__":
-    producer = get_producer()
+    producer = MeinKafkaProducer("kafka", "linkedin", 2)
+    # producer = get_producer()
+    i = 0
     with open("data.csv") as f:
         csv_dict_reader = DictReader(f)
         for row in csv_dict_reader:
             ack = producer.send(
-                topic="linkedin",
-                value=json.dumps(row).encode("utf-8"),
+                key=i,
+                value=row,
             )
             metadata = ack.get()
 
             print(metadata.topic, metadata.partition, metadata)
+            i += 1

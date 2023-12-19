@@ -25,7 +25,9 @@ def consume_data():
 
     try:
         for message in consumer:
+            print("message is: ", message)
             print(message.value)
+            print()
     except KeyboardInterrupt:
         sys.exit()
 
